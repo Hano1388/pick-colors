@@ -44,19 +44,19 @@ class Colors extends React.Component {
     return _.map(colors, shades => {
       return _.map(shades, shade => {
         return (
-          <div
+          <button
+            onClick={(e) => this.props.chosenColor(shade.hex)}
             key={shade.id}
             className="four column"
             style={{ backgroundColor: `#${shade.hex}`, height: '50px'}}
           >
             {shade.name}
-          </div>
-        )
+          </button>
+        );
       });
     });
   }
   render() {
-
     if (!this.state.colors) {
       return <div>Loading...</div>
     }
@@ -72,3 +72,11 @@ class Colors extends React.Component {
 }
 
 export default Colors;
+
+// <div
+//   key={shade.id}
+//   className="four column"
+//   style={{ backgroundColor: `#${shade.hex}`, height: '50px'}}
+// >
+//   {shade.name}
+// </div>
