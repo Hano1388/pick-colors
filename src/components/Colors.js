@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import myServer from '../api';
+import api from '../api';
 
 class Colors extends React.Component {
   constructor(props) {
@@ -22,47 +22,50 @@ class Colors extends React.Component {
     }
   }
 
-  componentDidMount() {
-    myServer.get('/colors').then(response => {
-      const {
-        reds, pinks, oranges,
-        yellows, purples, greens,
-        blues, browns, whites, greys } = response.data;
+  async componentDidMount() {
+    const response = await api.get('/colors');
+    const {
+      reds, pinks, oranges,
+      yellows, purples, greens,
+      blues, browns, whites, greys } = response.data;
 
-      this.setState({ colors: {
-        reds, pinks, oranges,
-        yellows, purples, greens,
-        blues, browns, whites, greys }});
-    });
+    this.setState({ colors: {
+      reds, pinks, oranges,
+      yellows, purples, greens,
+      blues, browns, whites, greys }});
   }
 
   renderColors = () => {
-    return <div>  Hello</div>
-    // return color.map(color => {
-    //   return (
-    //       <div key={color.id} className="four column" style={{ backgroundColor: `#${color.hex}`}}></div>
-    //   )
-    // })
-  }
-  render() {
-    // console.log(this.state);
     const { colors } = this.state;
 
-    console.log(colors);
+    if(!colors.reds) {
+      return <div>Loading...</div>
+    }
+    return _.map(colors, shades => {
+      return _.map(shades, shade => {
+        return (
+          <div
+            key={shade.id}
+            className="four column"
+            style={{ backgroundColor: `#${shade.hex}`, height: '50px'}}
+          >
+            {shade.name}
+          </div>
+        )
+      });
+    });
+  }
+  render() {
 
-    if (!colors.reds) {
-      console.log("hello");
+    if (!this.state.colors) {
       return <div>Loading...</div>
     }
 
-    // Object.keys(colors).map(function(key, index) {
-      // console.log(colors[key]);
-      // TODO: call render function with colors[key] as an argument here
-    // })
-
     return (
-        <div>
-          render colors
+        <div className="ui grid">
+          <div className="doubling six column row">
+            {this.renderColors()}
+          </div>
         </div>
     )
   }
